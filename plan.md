@@ -80,5 +80,7 @@
 18. create the the viewsets and routers for the post with the specific querysets, permission and authentication classes.
 19. also add the action methods for like, dislike and views. using separate and proper query sets.
 20. test them using web api and also using pytest/django_api
+21. also add the filtering and pagination support for the posts.
+22. so all the aspects required would be covered
 
 Integrate it with the downloaded ui properly.
