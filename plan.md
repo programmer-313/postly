@@ -4,9 +4,9 @@
 
 ## Setting up the Project
 
-1. Setup the django application and provide the only way to login using email and password, and also provide a way to login with google (if you would have time).
-2. Change the in-built django model for creating the email as a primary key and removing username field from the User model.
-3. Test the modified User Model using Django API Client and pytest.
+1. Setup the django application and provide the only way to login using email and password, and also provide a way to login with google (if you would have time). - ___OK___
+2. Change the in-built django model for creating the email as a primary key and removing username field from the User model. - ___OK___
+3. Test the modified User Model using Django API Client and pytest. - ___OK___
 4. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
 5. Setup that smtp or what so ever emailing method.
 6. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
@@ -82,5 +82,6 @@
 20. test them using web api and also using pytest/django_api
 21. also add the filtering and pagination support for the posts.
 22. so all the aspects required would be covered
+23. add the django cors headers after the integration with frontend ui using this lib [django-cors-headers](https://pypi.org/project/django-cors-headers/)
 
 Integrate it with the downloaded ui properly.
