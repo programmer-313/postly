@@ -4,10 +4,11 @@ from users.models import User
 
 
 class TestUserModel(TestCase):
-    test_pass = "django_test_client"
-    n = 3
+
     # setting up the model instances
     def setUp(self) -> None:
+        self.test_pass = "django_test_client"
+        self.n = 3
         for i in range(self.n):
             User.objects.create(email=f"testuser{i+1}@example.com", password=self.test_pass)
 

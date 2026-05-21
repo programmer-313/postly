@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
+import uuid
 
 
 class PostlyUserManager(UserManager):
@@ -38,6 +39,7 @@ class User(AbstractUser):
         unique=True,
     )
     is_email_verified = models.BooleanField(default=False)
+    token_version = models.UUIDField(default=uuid.uuid4, unique=True)
 
     objects = PostlyUserManager()
 

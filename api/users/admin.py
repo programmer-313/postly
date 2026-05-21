@@ -21,7 +21,8 @@ class PostlyUserAdmin(UserAdmin):
                 )
             },
         ),
-        (_("Important Dates"), {"fields": ("last_login", "date_joined")})
+        (_("Important Dates"), {"fields": ("last_login", "date_joined")}),
+        (_("Auth Token Version"), {"fields": ("token_version",)}),
     )
     add_fieldsets = (
         (

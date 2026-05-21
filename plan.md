@@ -7,10 +7,15 @@
 1. Setup the django application and provide the only way to login using email and password, and also provide a way to login with google (if you would have time). - ___OK___
 2. Change the in-built django model for creating the email as a primary key and removing username field from the User model. - ___OK___
 3. Test the modified User Model using Django API Client and pytest. - ___OK___
-4. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
-5. Setup that smtp or what so ever emailing method.
-6. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
-7. Test it using Django API Client and Pytest.
+4. before creating the email  sign up method for drf api i created the way to login, logout and refresh the access tokens using simple jwt library. - ___OK___
+5. created the custom way to logout the user from all devices rather than only blacklisting the refresh token. - ___OK___
+6. edited the user model for this as well for saving the token versions. - ___OK___
+7. tested it using drf api and pytest. - ___OK___
+8. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
+9. Setup that smtp or what so ever emailing method.
+10. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
+11. Test it using Django API Client and Pytest.
+12. First enable the sending 
 
 ## Creating Rest API and setting up the user login methods
 

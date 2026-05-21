@@ -135,7 +135,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "users.authentication.FixedJWTAuthentication",
     ]
 }
 
@@ -146,10 +146,17 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
+    "TOKEN_OBTAIN_SERIALIZER": "users.serializers.FixedTokenObtainPairSerializer"
 }
 
 
 # add the allowed cors origins
+
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.:8000",
 ]
+
+
+# email backend configurations
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
