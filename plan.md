@@ -11,11 +11,18 @@
 5. created the custom way to logout the user from all devices rather than only blacklisting the refresh token. - ___OK___
 6. edited the user model for this as well for saving the token versions. - ___OK___
 7. tested it using drf api and pytest. - ___OK___
-8. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
-9. Setup that smtp or what so ever emailing method.
-10. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
-11. Test it using Django API Client and Pytest.
-12. First enable the sending 
+8. initially the refresh and login views were not returning token version along with the returned response. - __OK__
+9. Customized their serializers to obtain the expected response. And changed their views, urls and test cases accordingly. - __OK__
+10. written test cases for logout view. - __OK__
+11. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
+12. Setup that smtp or what so ever emailing method.
+13. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
+14. Test it using Django API Client and Pytest.
+15. First enable the sending 
+
+## Email verification setup for signup
+
+<!-- TODO: setup the complete procedure -->
 
 ## Creating Rest API and setting up the user login methods
 

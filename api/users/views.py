@@ -1,20 +1,29 @@
 from django.http import JsonResponse
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
+from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.exceptions import TokenError
-from django.core.mail import send_mail
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView, 
+    TokenBlacklistView,
+    TokenRefreshView,
+)
+
 
 import uuid
 
-from users.serializers import FixedTokenObtainPairSerializer
+from users.serializers import FixedTokenObtainPairSerializer, FixedTokenRefreshSerializer
 from users.models import User
 
 
-# add the fixed serializer for the login view
+# add the fixed serializer classes for the login and refresh view in order to add token version in returned data
 class JWTLoginView(TokenObtainPairView):
     serializer_class = FixedTokenObtainPairSerializer
+
+
+class JWTTokenRefreshView(TokenRefreshView):
+    serializer_class = FixedTokenRefreshSerializer
 
 
 class JWTLogoutView(TokenBlacklistView):
@@ -36,7 +45,7 @@ class JWTLogoutView(TokenBlacklistView):
             return response
         except TokenError as e:
             error = {
-                "detail": "Token is invalid",
+                "detail": str(e),
                 "code": "token_not_valid"
             }
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
