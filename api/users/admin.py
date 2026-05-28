@@ -14,6 +14,7 @@ class PostlyUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_active",
+                    "is_verified",
                     "is_staff",
                     "is_superuser",
                     "groups",
@@ -22,7 +23,10 @@ class PostlyUserAdmin(UserAdmin):
             },
         ),
         (_("Important Dates"), {"fields": ("last_login", "date_joined")}),
-        (_("Auth Token Version"), {"fields": ("token_version",)}),
+        (_("JWT Auth Token Version"), {"fields": ("token_version",)}),
+        (_("User OTP Information"), {"fields": (
+            "otp_code", "otp_version", "otp_created_at",
+        )})
     )
     add_fieldsets = (
         (

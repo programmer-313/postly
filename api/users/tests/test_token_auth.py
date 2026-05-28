@@ -16,6 +16,8 @@ class AbstractTokenAuthCase(APITestCase):
         # create test object
         self.user = User(email=self.email)
         self.user.set_password(self.valid_pass)
+        self.user.is_active = True
+        self.user.is_verified = True
         self.user.save()
 
 

@@ -20,6 +20,8 @@ class TestUserModel(TestCase):
         for i in range(self.n):
             user = User.objects.get(email=f"testuser{i+1}@example.com")
             assert user.email == f"testuser{i+1}@example.com"
+            assert user.is_verified == False
+            assert user.is_active == False
 
     # testing update operation
     def test_update_user_instances(self):
