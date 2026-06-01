@@ -1,12 +1,17 @@
 from typing import Any
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer
 )
 
 
+# get the user model for using it in serializers
+User = get_user_model()
+
+
+# serializers for jwt token authentication
 class FixedTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     modify validate method to add the token version to returned token pair
@@ -47,3 +52,11 @@ class FixedTokenRefreshSerializer(TokenRefreshSerializer):
     #     token["token_version"] = str(user.token_version)
 
     #     return token
+
+
+# serializers for user sign up and adding otp feature
+class UserSignupSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = User
+            fields = ["email", "password"]

@@ -22,6 +22,7 @@
 
 ## Email verification setup for signup
 
+1. added the views, serializers and urls for creating inactive user. - ___OK___
 <!-- TODO: setup the complete procedure -->
 
 ## Creating Rest API and setting up the user login methods

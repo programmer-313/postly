@@ -1,20 +1,29 @@
 from django.http import JsonResponse
+from django.utils import timezone
 from django.core.mail import send_mail
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework import mixins
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.views import (
     TokenObtainPairView, 
     TokenBlacklistView,
     TokenRefreshView,
 )
-
-
 import uuid
 
-from users.serializers import FixedTokenObtainPairSerializer, FixedTokenRefreshSerializer
-from users.models import User
+from users.serializers import (
+    FixedTokenObtainPairSerializer, 
+    FixedTokenRefreshSerializer,
+    UserSignupSerializer
+)
+
+
+# get the user model for views
+User = get_user_model()
 
 
 # add the fixed serializer classes for the login and refresh view in order to add token version in returned data
@@ -49,6 +58,26 @@ class JWTLogoutView(TokenBlacklistView):
                 "code": "token_not_valid"
             }
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+# views for user sign up and otp verification
+class UserSignupViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserSignupSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # get the user data from serializer and create inactive user
+        user_data = serializer.validated_data
+        user = User(email=user_data.get("email"))
+        user.set_password(user_data.get("password"))
+        user.otp_created_at = timezone.now() - timezone.timedelta(seconds=120, microseconds=0.1)
+        user.save()
+
+        return Response(status=status.HTTP_201_CREATED, data={"detail": "Inactive user created successfully."})
+
 
 
 def send_test_mail(request):
