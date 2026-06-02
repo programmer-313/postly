@@ -56,7 +56,21 @@ class FixedTokenRefreshSerializer(TokenRefreshSerializer):
 
 # serializers for user sign up and adding otp feature
 class UserSignupSerializer(serializers.ModelSerializer):
-
+        
         class Meta:
             model = User
             fields = ["email", "password"]
+
+
+class UserSendOTPSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["otp_version"]
+
+
+class UserVerifyOTPSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["otp_version", "otp_code"]

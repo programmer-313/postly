@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.utils import timezone
-from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,7 +17,13 @@ import uuid
 from users.serializers import (
     FixedTokenObtainPairSerializer, 
     FixedTokenRefreshSerializer,
-    UserSignupSerializer
+    UserSignupSerializer,
+    UserSendOTPSerializer,
+    UserVerifyOTPSerializer,
+)
+from users.utils import (
+    generate_otp_code,
+    send_email_user_otp,
 )
 
 
@@ -61,32 +66,104 @@ class JWTLogoutView(TokenBlacklistView):
         
 
 # views for user sign up and otp verification
-class UserSignupViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
-    queryset = User.objects.all()
+class UserSignupViewSet(
+    viewsets.GenericViewSet, 
+    mixins.CreateModelMixin
+    ):
+    queryset = None
     serializer_class = UserSignupSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        user_serializer = self.get_serializer(data=request.data)
+        user_serializer.is_valid(raise_exception=True)
 
         # get the user data from serializer and create inactive user
-        user_data = serializer.validated_data
+        user_data = user_serializer.validated_data
         user = User(email=user_data.get("email"))
         user.set_password(user_data.get("password"))
-        user.otp_created_at = timezone.now() - timezone.timedelta(seconds=120, microseconds=0.1)
+        user.otp_created_at = timezone.now() - timezone.timedelta(seconds=120)
         user.save()
 
-        return Response(status=status.HTTP_201_CREATED, data={"detail": "Inactive user created successfully."})
+        return Response(
+            status=status.HTTP_201_CREATED, 
+            data={
+                "detail": "Inactive user created successfully.",
+                "user_id": str(user.id),
+                "otp_version": str(user.otp_version),
+            }
+        )
+
+
+# now create the viewset to send/resend otp to the user
+class UserSendOTPViewSet(
+    viewsets.GenericViewSet,
+    mixins.UpdateModelMixin
+    ):
+    queryset = User.objects.all()
+    serializer_class = UserSendOTPSerializer
+    http_method_names = ["patch", "options", "head"]    # we are omitting "put" provided by this mixin
+
+    def partial_update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user_serializer = self.get_serializer(user, data=request.data, partial=True)
+        user_serializer.is_valid(raise_exception=True)
+
+        user_data = user_serializer.validated_data    # it returns the data types same as serializer fields 
+        request_user_otp_version = user_data.get("otp_version")
+
+        if user.is_active or user.is_verified:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "detail": "User is already verified.",
+                    "code": "user_already_verified"
+                }
+            )
+        else:
+            if not (
+                str(user.otp_version) == str(request_user_otp_version)
+            ):
+                return Response(
+                    data={
+                        "detail": "Invalid Request",
+                        "code": "bad_request",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                if user.otp_created_at + timezone.timedelta(seconds=120) <= timezone.now():
+                    user.otp_code = generate_otp_code()
+                    user.otp_version = uuid.uuid4()
+                    user.otp_created_at = timezone.now()
+                    user.save()
+                    
+                    send_email_user_otp(
+                        user_otp_code=str(user.otp_code),
+                        user_email=user.email,
+                    )
+
+                    return Response(
+                        data={
+                            "detail": "Enter OTP sent to your Email for Account Verification.",
+                            "code": "otp_sent_to_email",
+                            "user_id": str(user.id),
+                            "otp_version": str(user.otp_version),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                else:
+                    return Response(
+                        data={
+                            "detail": "You can request for resending otp after 2 minutes",
+                            "code": "request_too_early"
+                        },
+                        status=status.HTTP_425_TOO_EARLY
+                    )
+
+
+# create viewset to verify user otp and make the user verified
+class UserVerifyOTPViewSet():
+    ...
 
 
 
-def send_test_mail(request):
-    send_mail(
-        "Testing Email",
-        "Checking if email services are working."
-        "API Test mail",
-        "admin@example.com",
-        ["user1@example.com"],
-        fail_silently=False,
-    )
-    return JsonResponse({"status": "test mail sent successfully."})
