@@ -61,7 +61,7 @@ class User(AbstractUser):
         add the fields for adding the otp verification feature during sign up
     """
     is_verified = models.BooleanField(default=False)
-    otp_code = models.PositiveIntegerField(default=generate_otp_code)
+    otp_code = models.CharField(default=generate_otp_code)
     otp_version = models.UUIDField(default=uuid.uuid4, unique=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
 

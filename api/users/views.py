@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
@@ -12,6 +13,7 @@ from rest_framework_simplejwt.views import (
     TokenBlacklistView,
     TokenRefreshView,
 )
+
 import uuid
 
 from users.serializers import (
@@ -113,7 +115,7 @@ class UserSendOTPViewSet(
 
         if user.is_active or user.is_verified:
             return Response(
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_403_FORBIDDEN,
                 data={
                     "detail": "User is already verified.",
                     "code": "user_already_verified"
@@ -146,7 +148,6 @@ class UserSendOTPViewSet(
                         data={
                             "detail": "Enter OTP sent to your Email for Account Verification.",
                             "code": "otp_sent_to_email",
-                            "user_id": str(user.id),
                             "otp_version": str(user.otp_version),
                         },
                         status=status.HTTP_200_OK,
@@ -162,8 +163,67 @@ class UserSendOTPViewSet(
 
 
 # create viewset to verify user otp and make the user verified
-class UserVerifyOTPViewSet():
-    ...
+class UserVerifyOTPViewSet(
+    viewsets.GenericViewSet,
+    mixins.UpdateModelMixin,
+):
+    queryset = User.objects.all()
+    serializer_class = UserVerifyOTPSerializer
+    http_method_names = ["patch", "head", "options"]
 
+    def partial_update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user_serializer = self.get_serializer(
+            user,
+            data=request.data,
+            partial=True,
+        )
 
+        user_serializer.is_valid(raise_exception=True)
+        user_data = user_serializer.validated_data
+        req_user_otp_ver = user_data.get("otp_version")
+        req_user_otp_code = user_data.get("otp_code")
 
+        if user.is_verified or user.is_active:
+            return Response(
+                data={
+                    "detail": "user is already verified.",
+                    "code": "user_already_verified",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+        if (
+            str(user.otp_version) == str(req_user_otp_ver)
+            and user.otp_code == str(req_user_otp_code)
+        ):
+            if user.otp_created_at + timezone.timedelta(minutes=15) >= timezone.now():
+                user.otp_version = uuid.uuid4()
+                user.otp_code = generate_otp_code()
+                user.is_verified = True
+                user.is_active = True
+                user.save()
+
+                return Response(
+                    data={
+                        "detail": "your account has been verified. login to access your account.",
+                        "code": "user_verification_successfull",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={
+                        "detail": "otp has been expired. enter otp within 15 minutes to verify your account.",
+                        "code": "otp_expired",
+                    },
+                    status=status.HTTP_408_REQUEST_TIMEOUT,
+                )
+        else:
+            return Response(
+                data={
+                    "detail": "invalid otp",
+                    "code": "invalid_otp",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )

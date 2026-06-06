@@ -9,5 +9,8 @@ class FixedJWTAuthentication(JWTAuthentication):
 
         if str(user.token_version) != token_version:
             raise AuthenticationFailed("You are already logged out.")
+        
+        if not user.is_verified:
+            raise AuthenticationFailed("User is unverified. verify your account before loggin in.")
 
         return user

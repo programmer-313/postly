@@ -7,12 +7,14 @@ from users.views import (
     JWTTokenRefreshView, 
     UserSignupViewSet,
     UserSendOTPViewSet,
+    UserVerifyOTPViewSet,
 )
 
 
 router = DefaultRouter()
 router.register(r"signup", UserSignupViewSet, basename="user-signup")
 router.register(r"send_otp", UserSendOTPViewSet, basename="user-send-otp")
+router.register(r"verify_otp", UserVerifyOTPViewSet, basename="user-verify-otp")
 
 urlpatterns = [
     path("token/login/", JWTLoginView.as_view(), name="obtain-token-login"),

@@ -14,25 +14,24 @@
 8. initially the refresh and login views were not returning token version along with the returned response. - __OK__
 9. Customized their serializers to obtain the expected response. And changed their views, urls and test cases accordingly. - __OK__
 10. written test cases for logout view. - __OK__
-11. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails.
-12. Setup that smtp or what so ever emailing method.
-13. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it.
-14. Test it using Django API Client and Pytest.
-15. First enable the sending 
+11. Find out a way to send the code to user email for verification before signing up, in order to prevent the registrations using fake emails. ___OK__
+12. Setup that smtp or what so ever emailing method. ___OK___
+13. Test that method by creating the user inside admin panel if its valid over there, or create some view to test it. ___OK___
+14. Test it using Django API Client and Pytest. ___OK___
 
 ## Email verification setup for signup
 
 1. added the views, serializers and urls for creating inactive user. - ___OK___
-<!-- TODO: setup the complete procedure -->
+2. created send otp, verify otp viewsets, integrated brevo for sending otps to users for account verification. ___OK___
 
 ## Creating Rest API and setting up the user login methods
 
-1. First of all Develop the sign up method for the user using drf after that email verification.
-2. create user model serializer for the views to signup and login the user
-3. Develop user modelviewsets for sign up and logging in the user.
-4. Test these views using post and get methods from web api and using django client and pytest as well. create separate test classes for each view as well.
-5. Check if email verification code is being received or not and either user are created successfully.
-6. Check if how would it be retained for the rest of the time. Also test views using Postman to check its real behavior as an api.
+1. First of all Develop the sign up method for the user using drf after that email verification. ___OK___
+2. create user model serializer for the views to signup and login the user. ___OK___
+3. Develop user modelviewsets for sign up and logging in the user. ___OK___
+4. Test these views using post and get methods from web api and using django client and pytest as well. create separate test classes for each view as well. ___OK___
+5. Check if email verification code is being received or not and either user are created successfully. ___OK___
+6. Check if how would it be retained for the rest of the time. Also test views using Postman to check its real behavior as an api. ___OK___
 
 ## Adding posts for the user
 
