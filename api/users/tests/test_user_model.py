@@ -11,6 +11,7 @@ class TestUserModel(TestCase):
         self.n = 3
         for i in range(self.n):
             User.objects.create(email=f"testuser{i+1}@example.com", password=self.test_pass)
+        print("")
 
     # testing retrieve operation
     def test_get_users(self):
@@ -37,5 +38,7 @@ class TestUserModel(TestCase):
     def test_delete_user_instance(self):
         initial_users = User.objects.all().count()
         assert initial_users == self.n
-        User.objects.get(email="testuser3@example.com").delete()
+        print(User.objects.all())
+        user = User.objects.get(email="testuser3@example.com")
+        user.delete()
         assert User.objects.all().count() == (self.n - 1)

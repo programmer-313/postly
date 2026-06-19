@@ -10,6 +10,8 @@ def generate_otp_code():
 
 
 def send_email_user_otp(user_otp_code, user_email):
+    print("REACHED_HERE")
+    print(settings.DEFAULT_FROM_EMAIL)
     send_mail(
         "Verification OTP",
         f"Your OTP for account verification is {user_otp_code}",

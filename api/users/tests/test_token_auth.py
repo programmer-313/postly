@@ -43,7 +43,7 @@ class TestTokenLoginView(AbstractTokenAuthCase):
         self.valid_creds = {"email": self.email, "password": self.valid_pass}
         self.invalid_creds = {"email": self.email, "password": self.invalid_pass}
 
-        self.url = reverse("obtain_token_login")
+        self.url = reverse("obtain-token-login")
 
     def test_login_valid_creds(self):
         response = self.client.post(self.url, self.valid_creds, format="json")
@@ -66,7 +66,7 @@ class TestTokenRefreshView(AbstractRefreshLogoutView):
     def setUp(self):
         super().setUp()
 
-        self.url = reverse("refresh_token")
+        self.url = reverse("refresh-token")
 
     def test_valid_access_token_generation(self):
         response = self.client.post(self.url, self.valid_data)
@@ -100,7 +100,7 @@ class TestTokenLogoutView(AbstractRefreshLogoutView):
     def setUp(self):
         super().setUp()
 
-        self.url = reverse("blacklist_token_logout")
+        self.url = reverse("blacklist-token-logout")
 
     def test_valid_refresh_token_blacklist(self):
         response = self.client.post(self.url, self.valid_data)

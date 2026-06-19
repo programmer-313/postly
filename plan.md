@@ -35,53 +35,55 @@
 
 ## Adding posts for the user
 
-1. Create the model for the Posts as well for the comments of those posts, and related models as well, like model, dislike model and picture model.
-2. Also you need to setup the cloudinary account and integrate it with your project for saving the pictures of the post.
-3. as you take the foreign key of the picture inside the post, so you would also have to create the Picture Model.
-4. first add the way for the single picture inside the post as cloudinary image field, and the add the support for multiple pictures after it would be working fine inside the posts model.
-5. check it using django admin
+1. Create the model for the Posts as well for the comments of those posts, and related models as well, like model, dislike model and picture model. ___OK___
+2. Also you need to setup the cloudinary account and integrate it with your project for saving the pictures of the post. ___OK___
+3. as you take the foreign key of the picture inside the post, so you would also have to create the Picture Model. ___OK___
+4. first add the way for the single picture inside the post as cloudinary image field, and the add the support for multiple pictures after it would be working fine inside the posts model. ___OK___
+5. check it using django admin ___OK___
 6. Post Model would be having the following fields.
 
-   - Title (Character field with max length of 75)
-   - author (Foreign key for the User model) along with related name for the reverse look up.
+   - Title (Character field with max length of 75) ___OK___
+   - posted_by (Foreign key for the User model) along with related name for the reverse look up. ___OK___
 
-    Pictures, first create them using simple django cloudinary field for the testing purposes and then modify the model to pictures which field would be removed from this Model and another Pictures Model would be created with relevant fields. and post would be Foreign Key over there.
-   - Content (TEXT Field)
-   - created at (Datetime field)
-   - modified at (datetime field)
-   - Views on the post (Bigint field and default to 0)
-   - likes counts (bigint field with default to 0) and increased using action methods and required would False and would be calculated using aggregate queryset for the action method
-   - dislikes counts (bigint field with default to 0) and increased using action methods and required would False and would be calculated using aggregate queryset for action method
+    Pictures, first create them using simple django cloudinary field for the testing purposes and then modify the model to pictures which field would be removed from this Model and another Pictures Model would be created with relevant fields. and post would be Foreign Key over there. ___OK___
+   - Content (TEXT Field) ___OK___
+   - created at (Datetime field) ___OK___
+   - modified at (datetime field) __OK___
+   - Views on the post (Bigint field and default to 0) ___OK___ 
+   - likes counts (bigint field with default to 0) and increased using action methods and required would False and would be calculated using aggregate queryset for the action method ___OK___
+   - dislikes counts (bigint field with default to 0) and increased using action methods and required would False and would be calculated using aggregate queryset for action method ___OK___
 
 7. Comment model would be having these fields
 
-   - author (foreign key for the user) also add the related name
-   - content (Text field)
-   - commented_at (datetime field)
-   - edited at (datetime field)
-   - post (forign key for the post model) & its related name
+   - commented_by (foreign key for the user) also add the related name ___OK___
+   - content (Text field) ___OK___
+   - commented_at (datetime field) ___OK___
+   - edited at (datetime field) ___OK___
+   - post (forign key for the post model) & its related name ___OK___
 
 8. Picture Model which would be created after the cloudinary integration testing, would be having following fields
 
-   - picture (imagecloudinaryfield) and used properly after proper configurations
-   - post (foreign key for the post) and its related name
+   - picture (imagecloudinaryfield) and used properly after proper configurations ___OK___
+   - post (foreign key for the post) and its related name ___OK___
+   - index (Positive int field) and default to 0. ___OK___
 
-    > Note: we would be adding the abstract class for like and dislike model as components are open for extension but close for modification according to SOLID Principles, so we can't modify the like model for dislike model
+10. Like Model 
+    - reacted_by ___OK___
+    - reacted_by ___OK___
+    - post ___OK___
+    - is_liked (boolean field) default to False ___OK___
+    
+11. Dislike Model 
 
-9. AbstractLikeDislikeModel
-    This model would not have any table nor migrations, as its abstract class
-    - reactor
-    - post
+    - is_disliked (boolean field) default to False ___OK___
+    - reacted_by ___OK___
+    - post ___OK___
+    
 
-10. Like Model (inherits from AbstractLikeDislikeModel)
+12. Also add the Tag Model for post and it would have many to many field in post (i.e. post would have many tags, and each tag can be in many posts.) Its fields would be:
 
-    - liked (boolean field) default to False
-    SO, its other fields would reactor and post
-
-11. Dislike Model (inherits from AbstractLikeDislikeModel)
-
-    - disliked (boolean field) default to False
-    So its other fields would also reactor and post
+    - keyword (charfield) max_length to 75
+    - created_at dt field
 
 12. Test these models using django admin after registering.
 13. Create the tests of all of these models using django api client and pytest one by one.
