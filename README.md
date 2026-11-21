@@ -1,6 +1,6 @@
 # Postly DRF API
 
-`TLDR` Develop the simple DRF API which would be used for posting the Posts like its in different social media platforms, as well as comment and like the posts. (add the email verification method before sign up)
+`TLDR` Given below is the plan to develop the simple DRF API which would be used for posting the Posts like its in different social media platforms, as well as comment and like the posts. (add the email verification method before sign up)
 
 ## Setting up the Project
 
